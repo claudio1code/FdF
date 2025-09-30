@@ -37,5 +37,24 @@ $(NAME):$(OBJS) $(LIBFT) $(MLX_LIB)
 	@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
 	@echo "$(GREEN)$(NAME) created successfully!$(DEF_COLOR)\n"
 
-$(OBJS_DIR)%.o:$(SRCS_DIR)%.c
-	$(CC) $(CFLAGS) 
+%.o:%.c
+	@echo "A compilar $<..."
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(LIBFT)
+	@make -sC $(LIBFT_DIR)
+
+clean:
+	@echo "A limpar ficheiros objetos..."
+	@rm -f $(OBJS)
+	@make -sC $(LIBFT_DIR) clean
+	@make -sC $(MLX_DIR) clean
+
+fclean:
+	@echo "Alimpar tudo..."
+	@rm -f $(NAME)
+	@make -sC $(LIBFT_DIR) fclean
+
+re: fclean all
+
+.PHONY:all clean fclean re
