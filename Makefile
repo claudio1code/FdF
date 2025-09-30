@@ -1,60 +1,65 @@
+# Nome do executável
+NAME = fdf
+
+# Compilador e flags de compilação
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
-NAME = fdf
-
+# --- Diretórios ---
 SRCS_DIR = srcs/
 OBJS_DIR = objs/
 INCS_DIR = includes/
 LIBFT_DIR = libft/
 MLX_DIR = minilibx-linux/
 
-SRCS = main.c
+# --- Ficheiros ---
+SRCS_LIST = main.c
+SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
+OBJS = $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
 
-OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
-
+# --- Bibliotecas ---
 LIBFT = $(LIBFT_DIR)/libft.a
-MLX_LIB = $(MLX_DIR)/libml.a
+MLX_LIB = $(MLX_DIR)/libmlx.a
 
+# --- Flags de Inclusão e Linkagem (como no so_long) ---
 INCLUDES = -I $(INCS_DIR) -I $(LIBFT_DIR) -I $(MLX_DIR)
+LDFLAGS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 
-LDFLAGS = -L$(LIBFT_DIR) -lft - L$(MLKDIR) -lmlx -lXext
-
-DEF_COLOR = \033[0;39m
-GRAY = \033[0;90m
-RED = \033[0;91m
+# --- Cores ---
 GREEN = \033[0;92m
 YELLOW = \033[0;93m
-BLUE = \033[0;94m
-MAGENTA = \033[0;95m
 CYAN = \033[0;96m
-WHITE = \033[0;97m
+DEF_COLOR = \033[0;39m
 
-all:$(NAME)
+# --- Regras ---
 
-$(NAME):$(OBJS) $(LIBFT) $(MLX_LIB)
-	@echo "$(YELLOW)Linking $(NAME)... $(DEF_COLOR)\n"
+all: $(NAME)
+
+$(NAME): $(OBJS) $(LIBFT) $(MLX_LIB)
+	@printf "$(YELLOW)A linkar $(NAME)... $(DEF_COLOR)\n"
 	@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
-	@echo "$(GREEN)$(NAME) created successfully!$(DEF_COLOR)\n"
+	@printf "$(GREEN)$(NAME) criado com sucesso!$(DEF_COLOR)\n"
 
-%.o:%.c
-	@echo "A compilar $<..."
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.c
+	@mkdir -p $(OBJS_DIR)
+	@printf "$(CYAN)A compilar $<... $(DEF_COLOR)\n"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(LIBFT)
+$(LIBFT):
 	@make -sC $(LIBFT_DIR)
 
+$(MLX_LIB):
+	@make -sC $(MLX_DIR)
+
 clean:
-	@echo "A limpar ficheiros objetos..."
-	@rm -f $(OBJS)
+	@rm -rf $(OBJS_DIR)
 	@make -sC $(LIBFT_DIR) clean
 	@make -sC $(MLX_DIR) clean
 
-fclean:
-	@echo "Alimpar tudo..."
+fclean: clean
 	@rm -f $(NAME)
 	@make -sC $(LIBFT_DIR) fclean
 
-re:fclean all
+re: fclean all
 
-.PHONY:all clean fclean re
+.PHONY: all clean fclean re
