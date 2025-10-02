@@ -6,35 +6,33 @@
 /*   By: clados-s <clados-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 11:09:52 by clados-s          #+#    #+#             */
-/*   Updated: 2025/10/01 14:04:45 by clados-s         ###   ########.fr       */
+/*   Updated: 2025/10/02 11:18:47 by clados-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
 	char	*dst;
 
-	if((x < 0 || y < 0) || (x > SIZEWD || y > SIZEHE))
+	if ((x < 0 || y < 0) || (x > SIZEWD || y > SIZEHE))
 		return ;
-	
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
 	*(unsigned int*)dst = color;
 }
+
 int	main(void)
 {
-	void	*mlx;
-	void	*mlx_win;
-	t_data	img;
+	t_fdf	fdf;
 
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "Teste");
-	img.img = mlx_new_image(mlx, 1920, 1080);
-	img.addr = mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-			&img.endian);
-	// my_mlx_pixel_put(&img, 5, 5, 0x00FF0000);
-	draw_squad(&img, 700, 700, 500, 500);
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 100, 100);
-	mlx_loop(mlx);
+	fdf.mlx_ptr = mlx_init();
+	fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, 1920, 1080, "FdF");
+	fdf.img.img_ptr = mlx_new_image(fdf.mlx_ptr, 1920, 1080);
+	fdf.img.addr = mlx_get_data_addr(fdf.img.img_ptr, &fdf.img.bits_per_pixel,
+			&fdf.img.line_length, &fdf.img.endian);
+	draw_squad(&fdf.img, 700, 700, 500, 500);
+	mlx_put_image_to_window(fdf.mlx_ptr, fdf.win_ptr, fdf.img.img_ptr, 0, 0);
+	mlx_key_hook(fdf.mlx_ptr, handle_key_press, &fdf);
+	mlx_loop(fdf.mlx_ptr);
 }

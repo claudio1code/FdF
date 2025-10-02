@@ -10,7 +10,9 @@ LIBFT_DIR = libft/
 MLX_DIR = minilibx-linux/
 
 SRCS_LIST = main.c\
-			quadrado.c
+			quadrado.c\
+			events.c
+
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS_LIST:.c=.o))
 
@@ -42,7 +44,6 @@ $(LIBFT):
 
 $(MLX_LIB):
 	@make -sC $(MLX_DIR)
-
 clean:
 	@rm -rf $(OBJS_DIR)
 	@make -sC $(LIBFT_DIR) clean

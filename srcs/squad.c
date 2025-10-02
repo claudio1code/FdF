@@ -1,5 +1,5 @@
 #include "fdf.h"
-void	draw_squad(t_data *img, int x0, int y0, int width, int height)
+void	draw_squad(t_img *img, int x0, int y0, int width, int height)
 {
 	int i;
 	int j;
